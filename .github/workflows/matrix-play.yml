@@ -13,8 +13,10 @@ jobs:
   tests:
     name: "py ${{ matrix.python-version }}; dj ${{ matrix.django-version}}"
     runs-on: "ubuntu-latest"
-
+    # We expect Django 4.0 to fail, so don't stop if it does.
+    continue-on-error: ${{ matrix.django-version == '4.0' }}
     strategy:
+      fail-fast: false
       matrix:
         python-version:
           - "3.7"
@@ -24,14 +26,16 @@ jobs:
         django-version:
           - "3.2"
           - "4.0"
-      fail-fast: false
 
     steps:
-      - name: "See what we have"
+      - name: "Fake tests"
         run: |
           echo "Python: ${{ matrix.python-version }}"
           echo "Django: ${{ matrix.django-version }}"
-
+          # Django 4.0 doesn't pass yet...
+          if [[ "${{ matrix.django-version }}" == "4.0" ]]; then exit 17; fi
+          echo "Success"
+          
   # A final step to give a simple name for required status checks.
   # https://github.com/orgs/community/discussions/33579
   success:
