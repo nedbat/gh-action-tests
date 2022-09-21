@@ -13,8 +13,6 @@ jobs:
   tests:
     name: "py ${{ matrix.python-version }}; dj ${{ matrix.django-version}}"
     runs-on: "ubuntu-latest"
-    # We expect Django 4.0 to fail, so don't stop if it does.
-    continue-on-error: ${{ matrix.django-version == '4.0' }}
     strategy:
       fail-fast: false
       matrix:
@@ -26,6 +24,8 @@ jobs:
         django-version:
           - "3.2"
           - "4.0"
+    # We expect Django 4.0 to fail, so don't stop if it does.
+    continue-on-error: ${{ matrix.django-version == '4.0' }}
 
     steps:
       - name: "Fake tests"
